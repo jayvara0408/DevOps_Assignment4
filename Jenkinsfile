@@ -5,9 +5,9 @@ pipeline {
         NODEJS_HOME = tool name: 'NodeJS'
         PATH = "${NODEJS_HOME}/bin:${env.PATH}"
         SONARQUBE_SERVER = 'SonarQube'
-        NEXUS_URL = 'http://nexus.example.com'
-        NEXUS_REPO = 'your-nexus-repository-id'
-        NEXUS_CREDENTIALS_ID = 'nexus-credentials-id'
+        NEXUS_URL = 'http://localhost:8081'
+        NEXUS_REPO = 'devops_assignment4'
+        NEXUS_CREDENTIALS_ID = 'nexus_credentials'
     }
 
     stages {
@@ -60,8 +60,8 @@ pipeline {
                 ],
                 credentialsId: "${NEXUS_CREDENTIALS_ID}",
                 groupId: 'com.example',
-                nexusUrl: "${NEXUS_URL}",
-                repository: "${NEXUS_REPO}",
+                nexusUrl: "${http://localhost:8081}",
+                repository: "${devops_assignment4}",
                 version: '1.0.0'
             }
         }
