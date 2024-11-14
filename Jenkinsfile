@@ -2,8 +2,9 @@ pipeline {
     agent any
 
     environment {
-        NODEJS_HOME = tool name: 'NodeJS'
-        PATH = "${NODEJS_HOME}/bin:${env.PATH}"
+        // Set the manually installed Node.js location
+        NODEJS_HOME = 'D:\\FSDT\\SEM 3\\DevOps\\Assignment 4\\node_modules\\.bin'
+        PATH = "${NODEJS_HOME}:${env.PATH}"
         SONARQUBE_SERVER = 'SonarQube'
         NEXUS_URL = 'http://localhost:8081'
         NEXUS_REPO = 'devops_assignment4'
@@ -19,20 +20,29 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                // Run npm install from the specified directory
+                dir('D:\\FSDT\\SEM 3\\DevOps\\Assignment 4') {
+                    sh 'npm install'
+                }
             }
         }
 
         stage('Build') {
             steps {
-                sh 'npm run build'
+                // Run build command in the same directory
+                dir('D:\\FSDT\\SEM 3\\DevOps\\Assignment 4') {
+                    sh 'npm run build'
+                }
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh 'sonar-scanner -Dsonar.projectKey=my-nodejs-project'
+                    // Run SonarQube analysis
+                    dir('D:\\FSDT\\SEM 3\\DevOps\\Assignment 4') {
+                        sh 'sonar-scanner -Dsonar.projectKey=my-nodejs-project'
+                    }
                 }
             }
         }
