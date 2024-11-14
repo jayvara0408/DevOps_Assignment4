@@ -60,9 +60,11 @@ pipeline {
                 ],
                 credentialsId: "${NEXUS_CREDENTIALS_ID}",
                 groupId: 'com.example',
-                nexusUrl: "http://localhost:8081",
-                repository: "devops_assignment4",
-                version: '1.0.0'
+                nexusUrl: "${NEXUS_URL}", // Using the environment variable for flexibility
+                repository: "${NEXUS_REPO}",
+                version: '1.0.0',
+                nexusVersion: '3',  // Added missing parameter
+                protocol: 'http'  // Added missing parameter (use 'https' if needed)
             }
         }
     }
