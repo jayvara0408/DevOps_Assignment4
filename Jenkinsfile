@@ -60,8 +60,8 @@ pipeline {
                 ],
                 credentialsId: "${NEXUS_CREDENTIALS_ID}",
                 groupId: 'com.example',
-                nexusUrl: "${http://localhost:8081}",
-                repository: "${devops_assignment4}",
+                nexusUrl: "http://localhost:8081",
+                repository: "devops_assignment4",
                 version: '1.0.0'
             }
         }
