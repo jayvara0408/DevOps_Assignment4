@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        // Set the manually installed Node.js location
-        NODEJS_HOME = 'D:\\FSDT\\SEM 3\\DevOps\\Assignment 4\\node_modules\\.bin'
-        PATH = "${NODEJS_HOME}:${env.PATH}"
+        // Using the pre-configured NodeJS installation from Jenkins tools
+        NODEJS_HOME = tool name: 'NodeJS', type: 'NodeJSInstallation'
+        PATH = "${NODEJS_HOME}/bin:${env.PATH}"
         SONARQUBE_SERVER = 'SonarQube'
         NEXUS_URL = 'http://localhost:8081'
         NEXUS_REPO = 'devops_assignment4'
@@ -20,29 +20,23 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                // Run npm install from the specified directory
-                dir('D:\\FSDT\\SEM 3\\DevOps\\Assignment 4') {
-                    sh 'npm install'
-                }
+                // Using Node.js to install dependencies
+                sh 'npm install'
             }
         }
 
         stage('Build') {
             steps {
-                // Run build command in the same directory
-                dir('D:\\FSDT\\SEM 3\\DevOps\\Assignment 4') {
-                    sh 'npm run build'
-                }
+                // Using Node.js to run the build
+                sh 'npm run build'
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    // Run SonarQube analysis
-                    dir('D:\\FSDT\\SEM 3\\DevOps\\Assignment 4') {
-                        sh 'sonar-scanner -Dsonar.projectKey=my-nodejs-project'
-                    }
+                    // Running SonarQube scanner for analysis
+                    sh 'sonar-scanner -Dsonar.projectKey=my-nodejs-project'
                 }
             }
         }
@@ -51,6 +45,7 @@ pipeline {
             steps {
                 script {
                     timeout(time: 1, unit: 'MINUTES') {
+                        // Wait for quality gate results
                         waitForQualityGate abortPipeline: true
                     }
                 }
@@ -59,22 +54,24 @@ pipeline {
 
         stage('Archive Artifact') {
             steps {
+                // Archiving the build artifacts (e.g., dist directory)
                 archiveArtifacts artifacts: 'dist/**', allowEmptyArchive: true
             }
         }
 
         stage('Deploy to Nexus') {
             steps {
+                // Deploy the artifact to Nexus repository
                 nexusArtifactUploader artifacts: [
                     [artifactId: 'my-app', classifier: '', file: 'dist/my-app.zip', type: 'zip']
                 ],
                 credentialsId: "${NEXUS_CREDENTIALS_ID}",
                 groupId: 'com.example',
-                nexusUrl: "${NEXUS_URL}", // Using the environment variable for flexibility
+                nexusUrl: "${NEXUS_URL}",
                 repository: "${NEXUS_REPO}",
                 version: '1.0.0',
-                nexusVersion: '3',  // Added missing parameter
-                protocol: 'http'  // Added missing parameter (use 'https' if needed)
+                nexusVersion: '3',
+                protocol: 'http'  // or 'https' based on your Nexus configuration
             }
         }
     }
