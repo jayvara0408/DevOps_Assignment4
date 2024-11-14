@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Using the pre-configured NodeJS installation from Jenkins tools
-        NODEJS_HOME = tool name: 'NodeJS', type: 'NodeJSInstallation'
+        NODEJS_HOME = tool name: 'NodeJS', type: 'NodeJS'
         PATH = "${NODEJS_HOME}/bin:${env.PATH}"
         SONARQUBE_SERVER = 'SonarQube'
         NEXUS_URL = 'http://localhost:8081'
